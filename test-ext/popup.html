@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TSA PROJECT</title>
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+
+<h2>Visual Aid Extension</h2>
+
+<div class="category">
+  <button class="cat-btn" data-cat="advanced">Presets</button>
+  <button class="cat-btn" data-cat="general">General Features</button>
+  <button class="cat-btn" data-cat="ai">AI</button>
+</div>
+
+<!-- PRESETS -->
+<div class="content" id="advanced">
+  <h3>Accessibility Presets</h3>
+
+  <button class="preset-btn" data-preset="highContrast">High Contrast</button>
+  <button class="preset-btn" data-preset="protanopia">Protanopia</button>
+  <button class="preset-btn" data-preset="deuteranopia">Deuteranopia</button>
+  <button class="preset-btn" data-preset="tritanopia">Tritanopia</button>
+  <button class="preset-btn" data-preset="cataracts">Cataracts</button>
+  <button class="preset-btn" data-preset="grayscale">Grayscale</button>
+</div>
+
+<!-- GENERAL FEATURES -->
+<div class="content" id="general">
+  <h3>General Features</h3>
+
+  <div class="folder">
+    <div class="folder-title">Colors</div>
+    <div class="folder-content">
+      <label>Background Color <input type="color" id="bgColor"></label>
+      <label>Text Color <input type="color" id="textColor"></label>
+      <label>Link Color <input type="color" id="linkColor"></label>
+    </div>
+  </div>
+
+  <div class="folder">
+    <div class="folder-title">Typography</div>
+    <div class="folder-content">
+
+      <!--work in progresss on font changer-->
+      <label for="fontSelect">Font Type</label>
+        <select id="fontSelect">
+          <option value="defaultFont">System Default</option>
+          <option value="atkinson">Atkinson Hyperlegible</option>
+          <option value="openDyslexic">Open Dyslexic</option>
+          <option value="verdana">Verdana</option>
+        </select> 
+      <label>Font Size <input type="text" id="fontSize"></label>
+      <label>Line Height <input type="text" id="lineHeight"></label>
+    </div>
+  </div>
+
+  <div class="folder">
+    <div class="folder-title">Visual Filters</div>
+    <div class="folder-content">
+      <label>Hue Rotate <input type="range" id="hueRotate" min="0" max="360"></label>
+      <label>Grayscale <input type="range" id="grayscale" min="0" max="100"></label>
+      <label>Contrast <input type="range" id="contrast" min="50" max="200"></label>
+      <label>Brightness <input type="range" id="brightness" min="50" max="200"></label>
+      <label>Saturation <input type="range" id="saturate" min="0" max="200"></label>
+    </div>
+  </div>
+
+  <button id="applyGeneral">Apply General Settings</button>
+  <button id="resetGeneral">Reset Original</button>
+</div>
+
+<!-- AI -->
+<div class="content" id="ai">
+  <h3>Ask AI</h3>
+  <textarea id="aiPrompt"></textarea>
+  <button id="sendAI">Ask AI</button>
+  <div id="aiResponse"></div>
+</div>
+
+<script src="popup.js"></script>
+</body>
+</html>

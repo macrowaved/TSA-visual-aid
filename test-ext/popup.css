@@ -1,0 +1,134 @@
+/* font stuff */
+@font-face {
+  font-family: 'Atkinson Hyperlegible';
+  src: url('fonts/AtkinsonHyperlegible-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Atkinson Hyperlegible';
+  src: url('fonts/AtkinsonHyperlegible-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Atkinson Hyperlegible';
+  src: url('fonts/AtkinsonHyperlegible-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Atkinson Hyperlegible';
+  src: url('fonts/AtkinsonHyperlegible-BoldItalic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+}
+
+
+body {
+  background-color: #111;
+  color: #eee;
+  font-family: "Atkinson Hyperlegible", sans-serif;
+  font-size: 13px;
+  width: 250px;
+  padding: 15px;
+}
+
+button {
+  font-family: "Atkinson Hyperlegible", sans-serif;
+}
+
+h2 {
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.category {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 10px;
+}
+
+.cat-btn {
+  background: #222;
+  color: #ff6ec7;
+  border: 1px solid #ff6ec7;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.cat-btn.active {
+  background: #ff6ec7;
+  color: #111;
+}
+
+.content {
+  display: none;
+  margin-top: 10px;
+}
+
+.folder {
+  border: 1px solid #333;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.folder-title {
+  background: #222;
+  padding: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #ff6ec7;
+}
+
+.folder-content {
+  display: none;
+  padding: 5px 10px;
+}
+
+input, select, textarea {
+  font-family: 'Atkinson Hyperlegible';
+  box-sizing: border-box;
+  width: 100%;
+  margin: 3px 0 6px 0;
+  padding: 2px 4px;
+  background: #111;
+  border: 1px solid #444;
+  color: #eee;
+  border-radius: 3px;
+}
+
+button {
+  background: #222;
+  color: #ff6ec7;
+  border: 1px solid #ff6ec7;
+  padding: 4px 8px;
+  margin-top: 5px;
+  cursor: pointer;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+button:hover {
+  background: #ff6ec7;
+  color: #111;
+}
+
+#aiPrompt {
+  height: 80px;
+  resize: none;
+}
+
+#aiResponse {
+  margin-top: 5px;
+  min-height: 50px;
+  background: #222;
+  padding: 5px;
+  border-radius: 3px;
+  overflow-y: auto;
+}
