@@ -1,4 +1,4 @@
-TSA project for the visually impaired.
+Technology Student Association software project for the visually impaired in the form of a Chrome extension.
 
 Hudson just install git 🙏
 
