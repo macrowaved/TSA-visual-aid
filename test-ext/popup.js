@@ -126,11 +126,8 @@ document.addEventListener("DOMContentLoaded", () => {
       bgColor: "#f7f7f7",
       textColor: "#1a1a1a",
       linkColor: "#0033cc",
-      fontFamily: "'OpenDyslexic', 'Arial', sans-serif",
       fontSize: "18px",
       lineHeight: "1.7",
-      letterSpacing: "0.05em",
-      wordSpacing: "0.16em",
       grayscale: 0,
       contrast: 105,
       brightness: 100,
@@ -203,9 +200,22 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       activePreset = name;
+
+//apply font for dyslexia
+      if (activePreset == "dyslexia"){
+        const fontSelect = document.getElementById("fontSelect")
+        fontSelect.value = "atkinson"
+        //#cuck4life
+
+        chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+          chrome.tabs.sendMessage(tabs[0].id, { action: "applyFont" });
+        });
+
+      }
       const p = PRESETS[name];
       Object.keys(inputs).forEach(k => inputs[k].value = p[k]);
       applySettings(p);
+
     };
   });
 
@@ -257,3 +267,7 @@ chrome.storage.sync.get(["selectedFont"], result => {
 fontSelect.addEventListener("change", () => {
   chrome.storage.sync.set({selectedFont: fontSelect.value});
 });
+
+
+
+//67676767676767
