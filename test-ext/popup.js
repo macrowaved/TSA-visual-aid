@@ -121,19 +121,23 @@ document.addEventListener("DOMContentLoaded", () => {
       brightness: 100,
       saturate: 0,
       hueRotate: 0
-    }
+    },
     dyslexia: {
-      bgColor: "#ffffff",
-      textColor: "#000000",
-      linkColor: "#000000",
-      fontSize: "16px",
-      lineHeight: "1.5",
-      grayscale: 100,
-      contrast: 110,
+      bgColor: "#f7f7f7",
+      textColor: "#1a1a1a",
+      linkColor: "#0033cc",
+      fontFamily: "'OpenDyslexic', 'Arial', sans-serif",
+      fontSize: "18px",
+      lineHeight: "1.7",
+      letterSpacing: "0.05em",
+      wordSpacing: "0.16em",
+      grayscale: 0,
+      contrast: 105,
       brightness: 100,
-      saturate: 0,
+      saturate: 90,
       hueRotate: 0
     }
+    
   };
 
   let activePreset = null;
