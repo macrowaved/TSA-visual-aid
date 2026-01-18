@@ -122,6 +122,18 @@ document.addEventListener("DOMContentLoaded", () => {
       saturate: 0,
       hueRotate: 0
     }
+    dyslexia: {
+      bgColor: "#ffffff",
+      textColor: "#000000",
+      linkColor: "#000000",
+      fontSize: "16px",
+      lineHeight: "1.5",
+      grayscale: 100,
+      contrast: 110,
+      brightness: 100,
+      saturate: 0,
+      hueRotate: 0
+    }
   };
 
   let activePreset = null;
@@ -138,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
           document.body.style.lineHeight = x.lineHeight;
           document.querySelectorAll("a").forEach(a => a.style.color = x.linkColor);
           document.documentElement.style.filter =
-            `hue-rotate(${x.hueRotate}deg)
+            `hue-rotate(${x.hueRotate}deg) 
              grayscale(${x.grayscale}%)
              contrast(${x.contrast}%)
              brightness(${x.brightness}%)
