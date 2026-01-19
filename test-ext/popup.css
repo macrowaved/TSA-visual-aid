@@ -41,9 +41,20 @@ button {
   font-family: "Atkinson Hyperlegible", sans-serif;
 }
 
+.presets {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 1. Consistent 2-column grid */
+  gap: 10px; /* 7. Better spacing */
+}
+
 h2 {
-  margin-bottom: 15px;
+  margin-bottom: 5px;
   text-align: center;
+}
+
+h3 {
+  margin-top: 20px;
+  margin-bottom: 5px;
 }
 
 .category {
@@ -54,8 +65,8 @@ h2 {
 
 .cat-btn {
   background: #222;
-  color: #ff6ec7;
-  border: 1px solid #ff6ec7;
+  color: #14b8a6;
+  border: 1px solid #14b8a6;
   border-radius: 5px;
   padding: 5px 10px;
   cursor: pointer;
@@ -63,13 +74,13 @@ h2 {
 }
 
 .cat-btn.active {
-  background: #ff6ec7;
+  background: #14b8a6;
   color: #111;
 }
 
 .content {
   display: none;
-  margin-top: 10px;
+  margin-top: 0px;
 }
 
 .folder {
@@ -83,7 +94,7 @@ h2 {
   padding: 5px;
   cursor: pointer;
   font-weight: bold;
-  color: #ff6ec7;
+  color: #14b8a6;
 }
 
 .folder-content {
@@ -105,8 +116,8 @@ input, select, textarea {
 
 button {
   background: #222;
-  color: #ff6ec7;
-  border: 1px solid #ff6ec7;
+  color: #14b8a6;
+  border: 1px solid #14b8a6;
   padding: 4px 8px;
   margin-top: 5px;
   cursor: pointer;
@@ -115,7 +126,7 @@ button {
 }
 
 button:hover {
-  background: #ff6ec7;
+  background: #14b8a6;
   color: #111;
 }
 
