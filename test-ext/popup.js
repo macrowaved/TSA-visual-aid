@@ -273,7 +273,3 @@ chrome.storage.sync.get(["selectedFont"], result => {
 fontSelect.addEventListener("change", () => {
   chrome.storage.sync.set({selectedFont: fontSelect.value});
 });
-
-
-
-//67676767676767
