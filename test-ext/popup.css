@@ -44,7 +44,7 @@ button {
 .presets {
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* 1. Consistent 2-column grid */
-  gap: 10px; /* 7. Better spacing */
+  gap: 5px; /* 7. Better spacing */
 }
 
 h2 {
@@ -94,7 +94,7 @@ h3 {
   padding: 5px;
   cursor: pointer;
   font-weight: bold;
-  color: #14b8a6;
+  color: #eee;
 }
 
 .folder-content {
@@ -133,6 +133,14 @@ button:hover {
 #aiPrompt {
   height: 80px;
   resize: none;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.sendButton {
+  width: 100%;
+  margin-top: 0px;
+  margin-bottom: 15px;
 }
 
 #aiResponse {

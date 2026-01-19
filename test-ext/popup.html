@@ -11,7 +11,7 @@
 
 <div class="category">
   <button class="cat-btn" data-cat="advanced">Presets</button>
-  <button class="cat-btn" data-cat="general">General Features</button>
+  <button class="cat-btn" data-cat="general">Custom Settings</button>
   <button class="cat-btn" data-cat="ai">AI</button>
 </div>
 
@@ -32,7 +32,7 @@
 
 <!-- GENERAL FEATURES -->
 <div class="content" id="general">
-  <h3>General Features</h3>
+  <h3 style="margin-bottom: 10px">Custom Settings</h3>
 
   <div class="folder">
     <div class="folder-title">Colors</div>
@@ -46,8 +46,6 @@
   <div class="folder">
     <div class="folder-title">Typography</div>
     <div class="folder-content">
-
-      <!--work in progresss on font changer-->
       <label for="fontSelect">Font Type</label>
         <select id="fontSelect">
           <option value="defaultFont">System Default</option>
@@ -57,6 +55,8 @@
         </select> 
       <label>Font Size <input type="text" id="fontSize"></label>
       <label>Line Height <input type="text" id="lineHeight"></label>
+      <label>Letter Spacing <input type="text" id="letterSpacing"></label>
+      <label>Word Spacing <input type="text" id="wordSpacing"></label>
     </div>
   </div>
 
@@ -71,15 +71,18 @@
     </div>
   </div>
 
-  <button id="applyGeneral">Apply General Settings</button>
-  <button id="resetGeneral">Reset Original</button>
+  <!-- ok i know these arent preset buttons but im stealing the css im not changing the name -->
+  <div class="presets">
+    <button id="applyGeneral" style="margin-top: 0">Apply</button>
+    <button id="resetGeneral" style="margin-top: 0">Reset</button>
+  </div>
 </div>
 
 <!-- AI -->
 <div class="content" id="ai">
   <h3>Ask AI</h3>
   <textarea id="aiPrompt"></textarea>
-  <button id="sendAI">Ask AI</button>
+  <button class="sendButton" id="sendAI">Ask AI</button>
   <div id="aiResponse"></div>
 </div>
 
