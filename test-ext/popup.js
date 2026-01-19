@@ -181,7 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
     Object.keys(inputs).forEach(k => inputs[k].value = DEFAULT_SETTINGS[k]);
     applySettings(DEFAULT_SETTINGS);
 
-    // hi hudson this is to reset the font too
+    // hi hudson this is to reset the font
     chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
       chrome.tabs.sendMessage(tabs[0].id, { action: "resetFont" });
     })
@@ -196,15 +196,21 @@ document.addEventListener("DOMContentLoaded", () => {
         activePreset = null;
         Object.keys(inputs).forEach(k => inputs[k].value = DEFAULT_SETTINGS[k]);
         applySettings(DEFAULT_SETTINGS);
+
+        //reset font
+        chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+          chrome.tabs.sendMessage(tabs[0].id, { action: "resetFont" });
+        });
         return;
       }
 
       activePreset = name;
 
-//apply font for dyslexia
+      //apply font for given presets
       if (activePreset == "dyslexia"){
         const fontSelect = document.getElementById("fontSelect")
         fontSelect.value = "atkinson"
+        fontSelect.dispatchEvent(new Event("change"));
         //#cuck4life
 
         chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
