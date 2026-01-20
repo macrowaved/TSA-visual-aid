@@ -128,20 +128,31 @@ document.addEventListener("DOMContentLoaded", () => {
       hueRotate: 0
     },
     dyslexia: {
-      bgColor: "#f7f7f7",
-      textColor: "#1a1a1a",
-      linkColor: "#0033cc",
+      bgColor: "#ffffff",
+      textColor: "#000000",
+      linkColor: "#0044cc",
       fontSize: "18px",
-      lineHeight: "1.75",
-      letterSpacing: "0.04em",
-      wordSpacing: "0.16em",
+      lineHeight: "1.5",
+      letterSpacing: "0.05em",
+      wordSpacing: "0.15em",
       grayscale: 0,
-      contrast: 105,
+      contrast: 100,
       brightness: 100,
-      saturate: 90,
+      saturate: 100,
+      hueRotate: 0
+    },
+    lowVision: {
+      bgColor: "#ffffff",
+      textColor: "#0a0a0a",
+      linkColor: "#0044cc",
+      fontSize: "20px",
+      lineHeight: "1.6",
+      grayscale: 0,
+      contrast: 110,
+      brightness: 100,
+      saturate: 100,
       hueRotate: 0
     }
-    
   };
 
   let activePreset = null;
@@ -194,9 +205,11 @@ document.addEventListener("DOMContentLoaded", () => {
     applySettings(DEFAULT_SETTINGS);
 
     // hi hudson this is to reset the font
+    document.getElementById("fontSelect").value = "defaultFont";
+    fontSelect.dispatchEvent(new Event("change"));
     chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
       chrome.tabs.sendMessage(tabs[0].id, { action: "resetFont" });
-    })
+    });
   };
 
   /* ---------------- PRESET TOGGLE ---------------- */
@@ -209,6 +222,10 @@ document.addEventListener("DOMContentLoaded", () => {
         Object.keys(inputs).forEach(k => inputs[k].value = DEFAULT_SETTINGS[k]);
         applySettings(DEFAULT_SETTINGS);
 
+        // reset font dropdown to default and persist
+        fontSelect.value = DEFAULT_SETTINGS.fontSelect || "defaultFont";
+        chrome.storage.sync.set({ selectedFont: fontSelect.value });
+
         //reset font
         chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
           chrome.tabs.sendMessage(tabs[0].id, { action: "resetFont" });
@@ -219,7 +236,7 @@ document.addEventListener("DOMContentLoaded", () => {
       activePreset = name;
 
       //apply font for given presets
-      if (activePreset == "dyslexia"){
+      if (activePreset == "dyslexia" || activePreset == "lowVision") {
         const fontSelect = document.getElementById("fontSelect")
         fontSelect.value = "atkinson"
         fontSelect.dispatchEvent(new Event("change"));
@@ -229,6 +246,7 @@ document.addEventListener("DOMContentLoaded", () => {
           chrome.tabs.sendMessage(tabs[0].id, { action: "applyFont" });
         });
 
+        
       }
       const p = PRESETS[name];
       Object.keys(inputs).forEach(k => inputs[k].value = p[k]);
