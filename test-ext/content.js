@@ -8,7 +8,9 @@ function saveOriginal() {
   originalStyles = {
     backgroundColor: body.style.backgroundColor,
     color: body.style.color,
-    fontSize: body.style.fontSize
+    fontSize: body.style.fontSize,
+    letterSpacing: body.style.letterSpacing,
+    wordSpacing: body.style.wordSpacing
   };
 
   originalStylesSaved = true;
@@ -28,6 +30,18 @@ chrome.runtime.onMessage.addListener((msg) => {
 
     if (msg.settings.fontSize)
       body.style.fontSize = msg.settings.fontSize;
+
+    if (msg.settings.letterSpacing)
+      body.style.letterSpacing = msg.settings.letterSpacing;
+
+    if (msg.settings.wordSpacing)
+      body.style.wordSpacing = msg.settings.wordSpacing;
+
+    if (msg.settings.lineHeight)
+      body.style.lineHeight = msg.settings.lineHeight;
+      document.querySelectorAll('p, li, span, div, a, h1, h2, h3, h4, h5, h6').forEach(el => {
+        el.style.lineHeight = msg.settings.lineHeight;
+      });
   }
 
   if (msg.action === "applyAdvanced") {
@@ -50,6 +64,9 @@ chrome.runtime.onMessage.addListener((msg) => {
     body.style.backgroundColor = originalStyles.backgroundColor;
     body.style.color = originalStyles.color;
     body.style.fontSize = originalStyles.fontSize;
+    body.style.lineHeight = originalStyles.lineHeight;
+    body.style.letterSpacing = originalStyles.letterSpacing;
+    body.style.wordSpacing = originalStyles.wordSpacing;
   }
 });
 

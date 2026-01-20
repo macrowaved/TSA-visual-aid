@@ -25,7 +25,10 @@ document.addEventListener("DOMContentLoaded", () => {
     bgColor: bgColor,
     textColor: textColor,
     linkColor: linkColor,
+    fontSize: fontSize,
     lineHeight: lineHeight,
+    letterSpacing: letterSpacing,
+    wordSpacing: wordSpacing,
     hueRotate: hueRotate,
     grayscale: grayscale,
     contrast: contrast,
@@ -41,6 +44,8 @@ document.addEventListener("DOMContentLoaded", () => {
     linkColor: "",
     fontSize: "",
     lineHeight: "",
+    letterSpacing: "",
+    wordSpacing: "",
     hueRotate: 0,
     grayscale: 0,
     contrast: 100,
@@ -121,6 +126,32 @@ document.addEventListener("DOMContentLoaded", () => {
       brightness: 100,
       saturate: 0,
       hueRotate: 0
+    },
+    dyslexia: {
+      bgColor: "#ffffff",
+      textColor: "#000000",
+      linkColor: "#0044cc",
+      fontSize: "18px",
+      lineHeight: "1.5",
+      letterSpacing: "0.05em",
+      wordSpacing: "0.15em",
+      grayscale: 0,
+      contrast: 100,
+      brightness: 100,
+      saturate: 100,
+      hueRotate: 0
+    },
+    lowVision: {
+      bgColor: "#ffffff",
+      textColor: "#0a0a0a",
+      linkColor: "#0044cc",
+      fontSize: "20px",
+      lineHeight: "1.6",
+      grayscale: 0,
+      contrast: 110,
+      brightness: 100,
+      saturate: 100,
+      hueRotate: 0
     }
   };
 
@@ -136,9 +167,14 @@ document.addEventListener("DOMContentLoaded", () => {
           document.body.style.color = x.textColor;
           document.body.style.fontSize = x.fontSize;
           document.body.style.lineHeight = x.lineHeight;
+          document.querySelectorAll('p, li, span, div, a, h1, h2, h3, h4, h5, h6').forEach(el => {
+            el.style.lineHeight = x.lineHeight;
+          });
+          document.body.style.letterSpacing = x.letterSpacing;
+          document.body.style.wordSpacing = x.wordSpacing;
           document.querySelectorAll("a").forEach(a => a.style.color = x.linkColor);
           document.documentElement.style.filter =
-            `hue-rotate(${x.hueRotate}deg)
+            `hue-rotate(${x.hueRotate}deg) 
              grayscale(${x.grayscale}%)
              contrast(${x.contrast}%)
              brightness(${x.brightness}%)
@@ -168,10 +204,12 @@ document.addEventListener("DOMContentLoaded", () => {
     Object.keys(inputs).forEach(k => inputs[k].value = DEFAULT_SETTINGS[k]);
     applySettings(DEFAULT_SETTINGS);
 
-    // hi hudson this is to reset the font too
+    // hi hudson this is to reset the font
+    document.getElementById("fontSelect").value = "defaultFont";
+    fontSelect.dispatchEvent(new Event("change"));
     chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
       chrome.tabs.sendMessage(tabs[0].id, { action: "resetFont" });
-    })
+    });
   };
 
   /* ---------------- PRESET TOGGLE ---------------- */
@@ -183,13 +221,37 @@ document.addEventListener("DOMContentLoaded", () => {
         activePreset = null;
         Object.keys(inputs).forEach(k => inputs[k].value = DEFAULT_SETTINGS[k]);
         applySettings(DEFAULT_SETTINGS);
+
+        // reset font dropdown to default and persist
+        fontSelect.value = DEFAULT_SETTINGS.fontSelect || "defaultFont";
+        chrome.storage.sync.set({ selectedFont: fontSelect.value });
+
+        //reset font
+        chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+          chrome.tabs.sendMessage(tabs[0].id, { action: "resetFont" });
+        });
         return;
       }
 
       activePreset = name;
+
+      //apply font for given presets
+      if (activePreset == "dyslexia" || activePreset == "lowVision") {
+        const fontSelect = document.getElementById("fontSelect")
+        fontSelect.value = "atkinson"
+        fontSelect.dispatchEvent(new Event("change"));
+        //#cuck4life
+
+        chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+          chrome.tabs.sendMessage(tabs[0].id, { action: "applyFont" });
+        });
+
+        
+      }
       const p = PRESETS[name];
       Object.keys(inputs).forEach(k => inputs[k].value = p[k]);
       applySettings(p);
+
     };
   });
 
