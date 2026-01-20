@@ -3,9 +3,12 @@ Technology Student Association software project for the visually impaired in the
 Hudson just install git 🙏
 
 To-Do:
- - Make actual icon and cover image
- - More vision disabiliy presets. Include fonts in some of the presets (like for dyslexic people)
- - Make the AI not stupid
+ - Make actual icon and cover image.
+ - Save settings so that they still apply when you reload/change website to website
+ - Make it possible to select presets for multiple vision problems. (for example if someone had dyslexia and was colorblind they would need both presets)
+ - Make the AI not stupid.
+ - High contrast makes it impossible to read some websites like wikipedia, might want to fix
  - Make the extension more visible in general. (Increased text size/spacing for those with poor vision)
+ - Post to Chrome Web Store
 
 !! TO MAKE CHANGES MAKE A BRANCH FIRST SO WE HAVE A BACKUP DON'T CHANGE THE WHOLE VERSION BY FEEDING IT TO THE GPT !!
