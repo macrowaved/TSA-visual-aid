@@ -25,7 +25,10 @@ document.addEventListener("DOMContentLoaded", () => {
     bgColor: bgColor,
     textColor: textColor,
     linkColor: linkColor,
+    fontSize: fontSize,
     lineHeight: lineHeight,
+    letterSpacing: letterSpacing,
+    wordSpacing: wordSpacing,
     hueRotate: hueRotate,
     grayscale: grayscale,
     contrast: contrast,
@@ -41,6 +44,8 @@ document.addEventListener("DOMContentLoaded", () => {
     linkColor: "",
     fontSize: "",
     lineHeight: "",
+    letterSpacing: "",
+    wordSpacing: "",
     hueRotate: 0,
     grayscale: 0,
     contrast: 100,
@@ -127,7 +132,9 @@ document.addEventListener("DOMContentLoaded", () => {
       textColor: "#1a1a1a",
       linkColor: "#0033cc",
       fontSize: "18px",
-      lineHeight: "1.7",
+      lineHeight: "1.75",
+      letterSpacing: "0.04em",
+      wordSpacing: "0.16em",
       grayscale: 0,
       contrast: 105,
       brightness: 100,
@@ -149,6 +156,11 @@ document.addEventListener("DOMContentLoaded", () => {
           document.body.style.color = x.textColor;
           document.body.style.fontSize = x.fontSize;
           document.body.style.lineHeight = x.lineHeight;
+          document.querySelectorAll('p, li, span, div, a, h1, h2, h3, h4, h5, h6').forEach(el => {
+            el.style.lineHeight = x.lineHeight;
+          });
+          document.body.style.letterSpacing = x.letterSpacing;
+          document.body.style.wordSpacing = x.wordSpacing;
           document.querySelectorAll("a").forEach(a => a.style.color = x.linkColor);
           document.documentElement.style.filter =
             `hue-rotate(${x.hueRotate}deg) 
