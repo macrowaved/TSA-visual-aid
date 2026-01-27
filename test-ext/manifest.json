@@ -11,7 +11,7 @@
     "128": "icon.png"
   },
 
-  "permissions": ["storage", "scripting", "activeTab"],
+  "permissions": ["storage", "scripting", "activeTab", "tabs"],
 
   "host_permissions": [
     "http://127.0.0.1:11434/*"

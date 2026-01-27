@@ -50,36 +50,38 @@ chrome.storage.sync.get("generalSettings", data => {
 
 // --- Apply Settings ---
 function applyGeneralSettings(settings) {
-  chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-    chrome.scripting.executeScript({
-      target: { tabId: tabs[0].id },
-      func: (s) => {
-        if (!window.originalSettings) {
-          window.originalSettings = {
-            bgColor: document.body.style.backgroundColor,
-            textColor: document.body.style.color,
-            fontSize: document.body.style.fontSize,
-            letterSpacing: document.body.style.letterSpacing,
-            wordSpacing: document.body.style.wordSpacing,
-            linkColor: Array.from(document.querySelectorAll("a")).map(a => a.style.color),
-            boldText: Array.from(document.querySelectorAll("*")).map(el => el.style.fontWeight)
-          };
-        }
+  chrome.tabs.query({}, (tabs) => {
+    for (const tab of tabs) {
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: (s) => {
+          if (!window.originalSettings) {
+            window.originalSettings = {
+              bgColor: document.body.style.backgroundColor,
+              textColor: document.body.style.color,
+              fontSize: document.body.style.fontSize,
+              letterSpacing: document.body.style.letterSpacing,
+              wordSpacing: document.body.style.wordSpacing,
+              linkColor: Array.from(document.querySelectorAll("a")).map(a => a.style.color),
+              boldText: Array.from(document.querySelectorAll("*")).map(el => el.style.fontWeight)
+            };
+          }
 
-        document.body.style.backgroundColor = s.bgColor;
-        document.body.style.color = s.textColor;
-        document.body.style.fontSize = s.fontSize;
-        document.body.style.letterSpacing = s.letterSpacing;
-        document.body.style.wordSpacing = s.wordSpacing;
-        document.body.style.lineHeight = s.lineHeight;
-        document.querySelectorAll('p, li, span, div, a, h1, h2, h3, h4, h5, h6').forEach(el => {
-          el.style.lineHeight = s.lineHeight;
-        });
-        document.querySelectorAll("a").forEach(a => a.style.color = s.linkColor);
-        document.querySelectorAll("*").forEach(el => el.style.fontWeight = s.boldText ? "bold" : "normal");
-      },
-      args: [settings]
-    });
+          document.body.style.backgroundColor = s.bgColor;
+          document.body.style.color = s.textColor;
+          document.body.style.fontSize = s.fontSize;
+          document.body.style.letterSpacing = s.letterSpacing;
+          document.body.style.wordSpacing = s.wordSpacing;
+          document.body.style.lineHeight = s.lineHeight;
+          document.querySelectorAll('p, li, span, div, a, h1, h2, h3, h4, h5, h6').forEach(el => {
+            el.style.lineHeight = s.lineHeight;
+          });
+          document.querySelectorAll("a").forEach(a => a.style.color = s.linkColor);
+          document.querySelectorAll("*").forEach(el => el.style.fontWeight = s.boldText ? "bold" : "normal");
+        },
+        args: [settings]
+      });
+    }
   });
 }
 
@@ -103,19 +105,21 @@ function applyGeneralSettings(settings) {
 
 // --- Reset Original ---
 document.getElementById("resetGeneral").addEventListener("click", () => {
-  chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-    chrome.scripting.executeScript({
-      target: { tabId: tabs[0].id },
-      func: () => {
-        if (window.originalSettings) {
-          const s = window.originalSettings;
-          document.body.style.backgroundColor = s.bgColor;
-          document.body.style.color = s.textColor;
-          document.body.style.fontSize = s.fontSize;
-          document.querySelectorAll("a").forEach((a, i) => a.style.color = s.linkColor[i]);
-          document.querySelectorAll("*").forEach((el, i) => el.style.fontWeight = s.boldText[i]);
+  chrome.tabs.query({}, (tabs) => {
+    for (const tab of tabs) {
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: () => {
+          if (window.originalSettings) {
+            const s = window.originalSettings;
+            document.body.style.backgroundColor = s.bgColor;
+            document.body.style.color = s.textColor;
+            document.body.style.fontSize = s.fontSize;
+            document.querySelectorAll("a").forEach((a, i) => a.style.color = s.linkColor[i]);
+            document.querySelectorAll("*").forEach((el, i) => el.style.fontWeight = s.boldText[i]);
+          }
         }
-      }
-    });
+      });
+    }
   });
 });
