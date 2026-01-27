@@ -159,29 +159,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ---------------- APPLY SETTINGS ---------------- */
   function applySettings(s) {
-    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-      chrome.scripting.executeScript({
-        target: { tabId: tabs[0].id },
-        func: (x) => {
-          document.body.style.backgroundColor = x.bgColor;
-          document.body.style.color = x.textColor;
-          document.body.style.fontSize = x.fontSize;
-          document.body.style.lineHeight = x.lineHeight;
-          document.querySelectorAll('p, li, span, div, a, h1, h2, h3, h4, h5, h6').forEach(el => {
-            el.style.lineHeight = x.lineHeight;
-          });
-          document.body.style.letterSpacing = x.letterSpacing;
-          document.body.style.wordSpacing = x.wordSpacing;
-          document.querySelectorAll("a").forEach(a => a.style.color = x.linkColor);
-          document.documentElement.style.filter =
-            `hue-rotate(${x.hueRotate}deg) 
-             grayscale(${x.grayscale}%)
-             contrast(${x.contrast}%)
-             brightness(${x.brightness}%)
-             saturate(${x.saturate}%)`;
-        },
-        args: [s]
-      });
+    chrome.tabs.query({}, (tabs) => {
+      for (const tab of tabs) {
+        chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          func: (x) => {
+            document.body.style.backgroundColor = x.bgColor;
+            document.body.style.color = x.textColor;
+            document.body.style.fontSize = x.fontSize;
+            document.body.style.lineHeight = x.lineHeight;
+            document.querySelectorAll('p, li, span, div, a, h1, h2, h3, h4, h5, h6').forEach(el => {
+              el.style.lineHeight = x.lineHeight;
+            });
+            document.body.style.letterSpacing = x.letterSpacing;
+            document.body.style.wordSpacing = x.wordSpacing;
+            document.querySelectorAll("a").forEach(a => a.style.color = x.linkColor);
+            document.documentElement.style.filter =
+              `hue-rotate(${x.hueRotate}deg) 
+              grayscale(${x.grayscale}%)
+              contrast(${x.contrast}%)
+              brightness(${x.brightness}%)
+              saturate(${x.saturate}%)`;
+          },
+          args: [s]
+        });
+      }
     });
   }
 
@@ -193,8 +195,10 @@ document.addEventListener("DOMContentLoaded", () => {
     applySettings(s);
 
     // font code twih
-    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-      chrome.tabs.sendMessage(tabs[0].id, { action: "applyFont" });
+    chrome.tabs.query({}, (tabs) => {
+      for (const tab of tabs) {
+        chrome.tabs.sendMessage(tab.id, { action: "applyFont" });
+      }
     });
   };
 
@@ -207,8 +211,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // hi hudson this is to reset the font
     document.getElementById("fontSelect").value = "defaultFont";
     fontSelect.dispatchEvent(new Event("change"));
-    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-      chrome.tabs.sendMessage(tabs[0].id, { action: "resetFont" });
+    chrome.tabs.query({}, (tabs) => {
+      for (const tab of tabs) {
+        chrome.tabs.sendMessage(tab.id, { action: "resetFont" });
+      }
     });
   };
 
@@ -227,8 +233,10 @@ document.addEventListener("DOMContentLoaded", () => {
         chrome.storage.sync.set({ selectedFont: fontSelect.value });
 
         //reset font
-        chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-          chrome.tabs.sendMessage(tabs[0].id, { action: "resetFont" });
+        chrome.tabs.query({}, (tabs) => {
+          for (const tab of tabs) {
+            chrome.tabs.sendMessage(tab.id, { action: "resetFont" });
+          }
         });
         return;
       }
@@ -242,8 +250,10 @@ document.addEventListener("DOMContentLoaded", () => {
         fontSelect.dispatchEvent(new Event("change"));
         //#cuck4life
 
-        chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-          chrome.tabs.sendMessage(tabs[0].id, { action: "applyFont" });
+        chrome.tabs.query({}, (tabs) => {
+          for (const tab of tabs) {
+            chrome.tabs.sendMessage(tab.id, { action: "applyFont" });
+          }
         });
 
         
