@@ -248,7 +248,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const fontSelect = document.getElementById("fontSelect")
         fontSelect.value = "atkinson"
         fontSelect.dispatchEvent(new Event("change"));
-        //#cuck4life
 
         chrome.tabs.query({}, (tabs) => {
           for (const tab of tabs) {
