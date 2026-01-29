@@ -1,4 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
+  /* ------------chrome storage------------ */
+  function storeData(key, data) {
+    chrome.storage.local.set({[key]: data});
+  }
+
+  function loadData(key, callback) {
+    chrome.storage.local.get({[key]: null}, (result) => {
+      callback(result[key]);
+    });
+  }
 
   /* ---------------- UI ---------------- */
   const catBtns = document.querySelectorAll(".cat-btn");
@@ -187,11 +197,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  /* ---------------- LOAD SETTINGS ON OPEN ---------------- */
+
+
   /* ---------------- APPLY GENERAL BUTTON ---------------- */
   document.getElementById("applyGeneral").onclick = () => {
     const s = {};
     Object.keys(inputs).forEach(k => s[k] = inputs[k].value);
     activePreset = null;
+
+    storeData("settings", s);
     applySettings(s);
 
     // font code twih
@@ -206,6 +221,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("resetGeneral").onclick = () => {
     activePreset = null;
     Object.keys(inputs).forEach(k => inputs[k].value = DEFAULT_SETTINGS[k]);
+    storeData("settings", DEFAULT_SETTINGS);
     applySettings(DEFAULT_SETTINGS);
 
     // hi hudson this is to reset the font
@@ -356,16 +372,17 @@ Your purpose is to improve reading comfort, clarity, and accessibility — not t
       aiResponseDiv.textContent = "AI error";
     }
   };
+
+  //FONT CHANGER - SAVE SELECTION FROM DROPDOWN
+  const fontSelect = document.getElementById("fontSelect");
+
+  chrome.storage.sync.get(["selectedFont"], result => {
+    fontSelect.value = result.selectedFont || "defaultFont";
+  });
+
+  fontSelect.addEventListener("change", () => {
+    chrome.storage.sync.set({selectedFont: fontSelect.value});
+  });
 });
 
 
-//FONT CHANGER - SAVE SELECTION FROM DROPDOWN
-const fontSelect = document.getElementById("fontSelect");
-
-chrome.storage.sync.get(["selectedFont"], result => {
-  fontSelect.value = result.selectedFont || "defaultFont";
-});
-
-fontSelect.addEventListener("change", () => {
-  chrome.storage.sync.set({selectedFont: fontSelect.value});
-});
