@@ -197,9 +197,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* ---------------- LOAD SETTINGS ON OPEN ---------------- */
-
-
   /* ---------------- APPLY GENERAL BUTTON ---------------- */
   document.getElementById("applyGeneral").onclick = () => {
     console.log("does log work?");
@@ -243,6 +240,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (activePreset === name) {
         activePreset = null;
         Object.keys(inputs).forEach(k => inputs[k].value = DEFAULT_SETTINGS[k]);
+        storeData("settings", DEFAULT_SETTINGS);
         applySettings(DEFAULT_SETTINGS);
 
         // reset font dropdown to default and persist
@@ -276,6 +274,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       const p = PRESETS[name];
       Object.keys(inputs).forEach(k => inputs[k].value = p[k]);
+      storeData("settings", p);
       applySettings(p);
 
     };
