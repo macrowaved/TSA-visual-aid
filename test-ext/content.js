@@ -1,7 +1,4 @@
 // On page load, automatically apply stored settings
-console.log("Content script initialized.");
-
-console.log("Content script loaded, fetching stored settings...");
 chrome.storage.local.get("settings", ({ settings }) => {
   if (settings) {
     const body = document.body;
