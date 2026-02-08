@@ -46,6 +46,16 @@ document.addEventListener("DOMContentLoaded", () => {
     saturate: saturate
   };
 
+  /* ---------------- ION KNOW ---------------- */
+  loadData("settings", (savedSettings) => {
+    if (savedSettings) {
+      Object.keys(inputs).forEach(k => {
+        if (savedSettings[k] !== undefined) inputs[k].value = savedSettings[k];
+      });
+    }
+  });
+
+
   /* ---------------- DEFAULT (NORMAL PAGE) ---------------- */
   const DEFAULT_SETTINGS = {
     fontSelect: "defaultFont",
@@ -155,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
       bgColor: "#ffffff",
       textColor: "#0a0a0a",
       linkColor: "#0044cc",
-      fontSize: "20px",
+      fontSize: "25px",
       lineHeight: "1.6",
       grayscale: 0,
       contrast: 110,
@@ -168,19 +178,28 @@ document.addEventListener("DOMContentLoaded", () => {
   let activePreset = null;
 
 /* ---------------- LOAD BUTTON STATE ---------------- */
-loadData("selectedPreset", (savedPreset) => {
-    loadData("presetActive", (isActive) => {
-        if (!savedPreset || !isActive) return; // skip if not active
-        activePreset = savedPreset;
-        const p = PRESETS[activePreset];
-        if (p) {
-            Object.keys(inputs).forEach(k => inputs[k].value = p[k]);
-            applySettings(p);
-            // show the button as active
-            document.querySelector(`.preset-btn[data-preset="${activePreset}"]`)?.classList.add("active");
-        }
+// Load the last saved settings (preset or custom)
+loadData("settings", (savedSettings) => {
+  if (savedSettings) {
+    Object.keys(inputs).forEach(k => {
+      if (savedSettings[k] !== undefined) inputs[k].value = savedSettings[k];
     });
+    applySettings(savedSettings);
+  }
+  
+  // Now load selected preset ONLY for button highlight
+  loadData("presetActive", (isActive) => {
+    if (!isActive) return;
+    loadData("selectedPreset", (savedPreset) => {
+      if (!savedPreset) return;
+      activePreset = savedPreset;
+      // highlight preset button, but do NOT overwrite inputs
+      document.querySelectorAll(".preset-btn").forEach(b => b.classList.remove("active"));
+      document.querySelector(`.preset-btn[data-preset="${activePreset}"]`)?.classList.add("active");
+    });
+  });
 });
+
 
 
   /* ---------------- APPLY SETTINGS ---------------- */
@@ -237,6 +256,7 @@ loadData("selectedPreset", (savedPreset) => {
     Object.keys(inputs).forEach(k => inputs[k].value = DEFAULT_SETTINGS[k]);
     storeData("settings", DEFAULT_SETTINGS);
     applySettings(DEFAULT_SETTINGS);
+    document.querySelectorAll(".preset-btn").forEach(b => b.classList.remove("active"));
 
     // font code - reset font
     document.getElementById("fontSelect").value = "defaultFont";
