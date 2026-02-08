@@ -167,6 +167,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let activePreset = null;
 
+/* ---------------- LOAD BUTTON STATE ---------------- */
+loadData("selectedPreset", (savedPreset) => {
+    loadData("presetActive", (isActive) => {
+        if (!savedPreset || !isActive) return; // skip if not active
+        activePreset = savedPreset;
+        const p = PRESETS[activePreset];
+        if (p) {
+            Object.keys(inputs).forEach(k => inputs[k].value = p[k]);
+            applySettings(p);
+            // show the button as active
+            document.querySelector(`.preset-btn[data-preset="${activePreset}"]`)?.classList.add("active");
+        }
+    });
+});
+
+
   /* ---------------- APPLY SETTINGS ---------------- */
   function applySettings(s) {
     chrome.tabs.query({}, (tabs) => {
@@ -235,13 +251,19 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ---------------- PRESET TOGGLE ---------------- */
   document.querySelectorAll(".preset-btn").forEach(btn => {
     btn.onclick = () => {
+
       const name = btn.dataset.preset;
+
+      storeData("selectedPreset", name);
+      storeData("presetActive", true);
 
       if (activePreset === name) {
         activePreset = null;
         Object.keys(inputs).forEach(k => inputs[k].value = DEFAULT_SETTINGS[k]);
         storeData("settings", DEFAULT_SETTINGS);
-        applySettings(DEFAULT_SETTINGS);
+        applySettings(DEFAULT_SETTINGS); 
+        storeData("presetActive", false);
+        btn.classList.remove("active");
 
         // reset font dropdown to default and persist
         fontSelect.value = DEFAULT_SETTINGS.fontSelect || "defaultFont";
@@ -272,11 +294,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         
       }
+
       const p = PRESETS[name];
       Object.keys(inputs).forEach(k => inputs[k].value = p[k]);
       storeData("settings", p);
       applySettings(p);
-
+      document.querySelectorAll(".preset-btn").forEach(b => b.classList.remove("active"));
+      document.querySelector(`.preset-btn[data-preset="${name}"]`)?.classList.add("active");
     };
   });
 

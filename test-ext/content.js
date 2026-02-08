@@ -4,7 +4,6 @@ console.log("Content script initialized.");
 console.log("Content script loaded, fetching stored settings...");
 chrome.storage.local.get("settings", ({ settings }) => {
   if (settings) {
-    console.log("Applying stored settings on page load:", settings);
     const body = document.body;
 
     if (settings.bgColor) body.style.backgroundColor = settings.bgColor;
