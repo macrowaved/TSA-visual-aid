@@ -234,15 +234,18 @@ loadData("settings", (savedSettings) => {
 
   /* ---------------- APPLY GENERAL BUTTON ---------------- */
   document.getElementById("applyGeneral").onclick = () => {
-    console.log("does log work?");
     const s = {};
     Object.keys(inputs).forEach(k => s[k] = inputs[k].value);
     activePreset = null;
 
+    // Save the advanced/custom settings
     storeData("settings", s);
     applySettings(s);
 
-    // font code - apply selected font
+    // SAVE CURRENT FONT BEFORE APPLYING
+    chrome.storage.sync.set({ selectedFont: fontSelect.value });
+
+    // Apply the font
     chrome.tabs.query({}, (tabs) => {
       for (const tab of tabs) {
         chrome.tabs.sendMessage(tab.id, { action: "applyFont" });
@@ -250,12 +253,19 @@ loadData("settings", (savedSettings) => {
     });
   };
 
+
   /* ---------------- RESET ---------------- */
   document.getElementById("resetGeneral").onclick = () => {
     activePreset = null;
     Object.keys(inputs).forEach(k => inputs[k].value = DEFAULT_SETTINGS[k]);
     storeData("settings", DEFAULT_SETTINGS);
     applySettings(DEFAULT_SETTINGS);
+
+    // clear preset state in storage
+    storeData("selectedPreset", null);
+    storeData("presetActive", false);
+
+    // remove active highlight
     document.querySelectorAll(".preset-btn").forEach(b => b.classList.remove("active"));
 
     // font code - reset font
@@ -267,6 +277,7 @@ loadData("settings", (savedSettings) => {
       }
     });
   };
+
 
   /* ---------------- PRESET TOGGLE ---------------- */
   document.querySelectorAll(".preset-btn").forEach(btn => {
