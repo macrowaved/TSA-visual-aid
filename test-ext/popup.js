@@ -202,6 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ---------------- APPLY GENERAL BUTTON ---------------- */
   document.getElementById("applyGeneral").onclick = () => {
+    console.log("does log work?");
     const s = {};
     Object.keys(inputs).forEach(k => s[k] = inputs[k].value);
     activePreset = null;
@@ -209,7 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
     storeData("settings", s);
     applySettings(s);
 
-    // font code twih
+    // font code - apply selected font
     chrome.tabs.query({}, (tabs) => {
       for (const tab of tabs) {
         chrome.tabs.sendMessage(tab.id, { action: "applyFont" });
@@ -224,7 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
     storeData("settings", DEFAULT_SETTINGS);
     applySettings(DEFAULT_SETTINGS);
 
-    // hi hudson this is to reset the font
+    // font code - reset font
     document.getElementById("fontSelect").value = "defaultFont";
     fontSelect.dispatchEvent(new Event("change"));
     chrome.tabs.query({}, (tabs) => {

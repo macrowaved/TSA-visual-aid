@@ -1,36 +1,37 @@
 // On page load, automatically apply stored settings
-window.addEventListener('DOMContentLoaded', () => {
-  console.log("Content script loaded, fetching stored settings...");
-  chrome.storage.local.get("settings", ({ settings }) => {
-    if (settings) {
-      console.log("Applying stored settings on page load:", settings);
-      const body = document.body;
+console.log("Content script initialized.");
 
-      if (settings.bgColor) body.style.backgroundColor = settings.bgColor;
-      if (settings.textColor) body.style.color = settings.textColor;
-      if (settings.fontSize) body.style.fontSize = settings.fontSize;
-      if (settings.letterSpacing) body.style.letterSpacing = settings.letterSpacing;
-      if (settings.wordSpacing) body.style.wordSpacing = settings.wordSpacing;
+console.log("Content script loaded, fetching stored settings...");
+chrome.storage.local.get("settings", ({ settings }) => {
+  if (settings) {
+    console.log("Applying stored settings on page load:", settings);
+    const body = document.body;
 
-      if (settings.lineHeight) {
-        body.style.lineHeight = settings.lineHeight;
-        document.querySelectorAll('p, li, span, div, a, h1, h2, h3, h4, h5, h6').forEach(el => {
-          el.style.lineHeight = settings.lineHeight;
-        });
-      }
+    if (settings.bgColor) body.style.backgroundColor = settings.bgColor;
+    if (settings.textColor) body.style.color = settings.textColor;
+    if (settings.fontSize) body.style.fontSize = settings.fontSize;
+    if (settings.letterSpacing) body.style.letterSpacing = settings.letterSpacing;
+    if (settings.wordSpacing) body.style.wordSpacing = settings.wordSpacing;
 
-      document.querySelectorAll("a").forEach(a => a.style.color = settings.linkColor || "#0000ee");
-
-      document.documentElement.style.filter = `
-        hue-rotate(${settings.hueRotate || 0}deg)
-        grayscale(${settings.grayscale || 0}%)
-        contrast(${settings.contrast || 100}%)
-        brightness(${settings.brightness || 100}%)
-        saturate(${settings.saturate || 100}%)
-      `;
+    if (settings.lineHeight) {
+      body.style.lineHeight = settings.lineHeight;
+      document.querySelectorAll('p, li, span, div, a, h1, h2, h3, h4, h5, h6').forEach(el => {
+        el.style.lineHeight = settings.lineHeight;
+      });
     }
-  });
+
+    document.querySelectorAll("a").forEach(a => a.style.color = settings.linkColor || "#0000ee");
+
+    document.documentElement.style.filter = `
+      hue-rotate(${settings.hueRotate || 0}deg)
+      grayscale(${settings.grayscale || 0}%)
+      contrast(${settings.contrast || 100}%)
+      brightness(${settings.brightness || 100}%)
+      saturate(${settings.saturate || 100}%)
+    `;
+  }
 });
+
 
 let originalStylesSaved = false;
 let originalStyles = {};
