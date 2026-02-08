@@ -92,7 +92,7 @@ h3 {
 .folder {
   border: 1px solid #333;
   margin-bottom: 10px;
-  border-radius: 5px;
+  border-radius: 3px;
 }
 
 .folder-title {
@@ -101,6 +101,7 @@ h3 {
   cursor: pointer;
   font-weight: bold;
   color: #eee;
+  border-radius: 2px;
 }
 
 .folder-content {
@@ -157,3 +158,4 @@ button:hover {
   border-radius: 3px;
   overflow-y: auto;
 }
+ 
