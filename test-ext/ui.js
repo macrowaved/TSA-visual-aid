@@ -86,8 +86,17 @@ function applyGeneralSettings(settings) {
 }
 
 // --- Instant Apply ---
+function format(setting, unit) {
+  if (setting.value && !setting.value.includes(unit)) {
+    setting.value = setting.value + unit;
+  }
+}
+
 [bgColor, textColor, fontSize, linkColor, boldText].forEach(input => {
   input.addEventListener("input", () => {
+    format(fontSize, "px");
+    format(letterSpacing, "em");
+    format(wordSpacing, "em");
     const settings = {
       bgColor: bgColor.value,
       textColor: textColor.value,
