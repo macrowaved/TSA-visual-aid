@@ -1,4 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
+  /* ------------chrome storage------------ */
+  function storeData(key, data) {
+    chrome.storage.local.set({[key]: data});
+  }
+
+  function loadData(key, callback) {
+    chrome.storage.local.get({[key]: null}, (result) => {
+      callback(result[key]);
+    });
+  }
 
   /* ---------------- UI ---------------- */
   const catBtns = document.querySelectorAll(".cat-btn");
@@ -35,6 +45,16 @@ document.addEventListener("DOMContentLoaded", () => {
     brightness: brightness,
     saturate: saturate
   };
+
+  /* ---------------- ION KNOW ---------------- */
+  loadData("settings", (savedSettings) => {
+    if (savedSettings) {
+      Object.keys(inputs).forEach(k => {
+        if (savedSettings[k] !== undefined) inputs[k].value = savedSettings[k];
+      });
+    }
+  });
+
 
   /* ---------------- DEFAULT (NORMAL PAGE) ---------------- */
   const DEFAULT_SETTINGS = {
@@ -145,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
       bgColor: "#ffffff",
       textColor: "#0a0a0a",
       linkColor: "#0044cc",
-      fontSize: "20px",
+      fontSize: "25px",
       lineHeight: "1.6",
       grayscale: 0,
       contrast: 110,
@@ -156,6 +176,31 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   let activePreset = null;
+
+/* ---------------- LOAD BUTTON STATE ---------------- */
+// Load the last saved settings (preset or custom)
+loadData("settings", (savedSettings) => {
+  if (savedSettings) {
+    Object.keys(inputs).forEach(k => {
+      if (savedSettings[k] !== undefined) inputs[k].value = savedSettings[k];
+    });
+    applySettings(savedSettings);
+  }
+  
+  // Now load selected preset ONLY for button highlight
+  loadData("presetActive", (isActive) => {
+    if (!isActive) return;
+    loadData("selectedPreset", (savedPreset) => {
+      if (!savedPreset) return;
+      activePreset = savedPreset;
+      // highlight preset button, but do NOT overwrite inputs
+      document.querySelectorAll(".preset-btn").forEach(b => b.classList.remove("active"));
+      document.querySelector(`.preset-btn[data-preset="${activePreset}"]`)?.classList.add("active");
+    });
+  });
+});
+
+
 
   /* ---------------- APPLY SETTINGS ---------------- */
   function applySettings(s) {
@@ -192,9 +237,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const s = {};
     Object.keys(inputs).forEach(k => s[k] = inputs[k].value);
     activePreset = null;
+
+    // Save the advanced/custom settings
+    storeData("settings", s);
     applySettings(s);
 
-    // font code twih
+    // SAVE CURRENT FONT BEFORE APPLYING
+    chrome.storage.sync.set({ selectedFont: fontSelect.value });
+
+    // Apply the font
     chrome.tabs.query({}, (tabs) => {
       for (const tab of tabs) {
         chrome.tabs.sendMessage(tab.id, { action: "applyFont" });
@@ -202,13 +253,22 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
+
   /* ---------------- RESET ---------------- */
   document.getElementById("resetGeneral").onclick = () => {
     activePreset = null;
     Object.keys(inputs).forEach(k => inputs[k].value = DEFAULT_SETTINGS[k]);
+    storeData("settings", DEFAULT_SETTINGS);
     applySettings(DEFAULT_SETTINGS);
 
-    // hi hudson this is to reset the font
+    // clear preset state in storage
+    storeData("selectedPreset", null);
+    storeData("presetActive", false);
+
+    // remove active highlight
+    document.querySelectorAll(".preset-btn").forEach(b => b.classList.remove("active"));
+
+    // font code - reset font
     document.getElementById("fontSelect").value = "defaultFont";
     fontSelect.dispatchEvent(new Event("change"));
     chrome.tabs.query({}, (tabs) => {
@@ -218,15 +278,23 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
+
   /* ---------------- PRESET TOGGLE ---------------- */
   document.querySelectorAll(".preset-btn").forEach(btn => {
     btn.onclick = () => {
+
       const name = btn.dataset.preset;
+
+      storeData("selectedPreset", name);
+      storeData("presetActive", true);
 
       if (activePreset === name) {
         activePreset = null;
         Object.keys(inputs).forEach(k => inputs[k].value = DEFAULT_SETTINGS[k]);
-        applySettings(DEFAULT_SETTINGS);
+        storeData("settings", DEFAULT_SETTINGS);
+        applySettings(DEFAULT_SETTINGS); 
+        storeData("presetActive", false);
+        btn.classList.remove("active");
 
         // reset font dropdown to default and persist
         fontSelect.value = DEFAULT_SETTINGS.fontSelect || "defaultFont";
@@ -257,10 +325,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         
       }
+
       const p = PRESETS[name];
       Object.keys(inputs).forEach(k => inputs[k].value = p[k]);
+      storeData("settings", p);
       applySettings(p);
-
+      document.querySelectorAll(".preset-btn").forEach(b => b.classList.remove("active"));
+      document.querySelector(`.preset-btn[data-preset="${name}"]`)?.classList.add("active");
     };
   });
 
@@ -356,16 +427,17 @@ Your purpose is to improve reading comfort, clarity, and accessibility — not t
       aiResponseDiv.textContent = "AI error";
     }
   };
+
+  //FONT CHANGER - SAVE SELECTION FROM DROPDOWN
+  const fontSelect = document.getElementById("fontSelect");
+
+  chrome.storage.sync.get(["selectedFont"], result => {
+    fontSelect.value = result.selectedFont || "defaultFont";
+  });
+
+  fontSelect.addEventListener("change", () => {
+    chrome.storage.sync.set({selectedFont: fontSelect.value});
+  });
 });
 
 
-//FONT CHANGER - SAVE SELECTION FROM DROPDOWN
-const fontSelect = document.getElementById("fontSelect");
-
-chrome.storage.sync.get(["selectedFont"], result => {
-  fontSelect.value = result.selectedFont || "defaultFont";
-});
-
-fontSelect.addEventListener("change", () => {
-  chrome.storage.sync.set({selectedFont: fontSelect.value});
-});

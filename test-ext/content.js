@@ -1,3 +1,37 @@
+// On page load, automatically apply stored settings
+chrome.storage.local.get("settings", ({ settings }) => {
+  if (settings) {
+    const body = document.body;
+
+    if (settings.bgColor) body.style.backgroundColor = settings.bgColor;
+    if (settings.textColor) body.style.color = settings.textColor;
+    if (settings.fontSize) body.style.fontSize = settings.fontSize;
+    if (settings.letterSpacing) body.style.letterSpacing = settings.letterSpacing;
+    if (settings.wordSpacing) body.style.wordSpacing = settings.wordSpacing;
+
+    if (settings.lineHeight) {
+      body.style.lineHeight = settings.lineHeight;
+      document.querySelectorAll('p, li, span, div, a, h1, h2, h3, h4, h5, h6').forEach(el => {
+        el.style.lineHeight = settings.lineHeight;
+      });
+    }
+
+    if (settings.linkColor) {
+      document.querySelectorAll("a").forEach(a => a.style.color = settings.linkColor);
+    }
+
+
+    document.documentElement.style.filter = `
+      hue-rotate(${settings.hueRotate || 0}deg)
+      grayscale(${settings.grayscale || 0}%)
+      contrast(${settings.contrast || 100}%)
+      brightness(${settings.brightness || 100}%)
+      saturate(${settings.saturate || 100}%)
+    `;
+  }
+});
+
+
 let originalStylesSaved = false;
 let originalStyles = {};
 
@@ -18,7 +52,6 @@ function saveOriginal() {
 
 chrome.runtime.onMessage.addListener((msg) => {
   const body = document.body;
-  
   if (msg.action === "applyGeneral") {
     saveOriginal();
 
@@ -156,25 +189,28 @@ function injectFont(fontName) {
 
 // Message listener -> from popup.js, injects script when apply button is pressed
 chrome.runtime.onMessage.addListener((msg) => {
-	if (msg.action === "applyFont") {
-		chrome.storage.sync.get(["selectedFont"], result => {
-      if (result.selectedFont === "defaultFont") {
-        const old = document.getElementById("fontStyle");
-        if (old) old.remove();
-      } else if (result.selectedFont === "atkinson") {
-				injectFont("atkinson");
-      } else if (result.selectedFont === "openDyslexic") {
-        injectFont("openDyslexic");
-      } else if (result.selectedFont === "verdana") {
-        injectFont("verdana");
-      }
-		});
-	}
+  if (msg.action === "applyFont") {
+    applyFontFromStorage();
+  } else if (msg.action === "resetFont") {
+    removeInjectedFont();
+  }
 });
 
-chrome.runtime.onMessage.addListener((msg) => {
-  if (msg.action === "resetFont") {
-    const old = document.getElementById("fontStyle");
-    if (old) old.remove();
-  }
+function applyFontFromStorage() {
+  chrome.storage.sync.get(["selectedFont"], ({ selectedFont }) => {
+    removeInjectedFont(); // always remove first
+    if (!selectedFont || selectedFont === "defaultFont") return;
+    injectFont(selectedFont);
+  });
+}
+
+function removeInjectedFont() {
+  const old = document.getElementById("fontStyle");
+  if (old) old.remove();
+}
+
+// Apply the font immediately on page load
+chrome.storage.sync.get(["selectedFont"], ({ selectedFont }) => {
+  if (!selectedFont || selectedFont === "defaultFont") return;
+  injectFont(selectedFont);
 });
