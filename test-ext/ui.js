@@ -91,7 +91,7 @@ function format(setting, unit) {
     setting.value = setting.value + unit;
   }
 }
-
+console.log("hello?")
 [bgColor, textColor, fontSize, linkColor, boldText].forEach(input => {
   input.addEventListener("input", () => {
     format(fontSize, "px");
