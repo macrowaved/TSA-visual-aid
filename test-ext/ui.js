@@ -95,7 +95,7 @@ function format(setting, unit) {
 [bgColor, textColor, fontSize, linkColor, boldText].forEach(input => {
   input.addEventListener("input", () => {
     format(fontSize, "px");
-    console.log(fontSize)
+    console.log(fontSize.value)
     format(letterSpacing, "em");
     format(wordSpacing, "em");
     const settings = {
