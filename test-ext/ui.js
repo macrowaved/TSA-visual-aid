@@ -86,18 +86,17 @@ function applyGeneralSettings(settings) {
 }
 
 // --- Instant Apply ---
-function format(setting, unit) {
-  if (setting.value && !setting.value.includes(unit)) {
-    setting.value = setting.value + unit;
+function getFormatted(setting, unit) {
+  if (setting.value.includes(unit)) {
+    return setting.value;
+  } else {
+    const fixedValue = setting.value + unit;
+    return fixedValue;
   }
 }
-console.log("hello?")
+
 [bgColor, textColor, fontSize, linkColor, boldText].forEach(input => {
   input.addEventListener("input", () => {
-    format(fontSize, "px");
-    console.log(fontSize.value)
-    format(letterSpacing, "em");
-    format(wordSpacing, "em");
     const settings = {
       bgColor: bgColor.value,
       textColor: textColor.value,
