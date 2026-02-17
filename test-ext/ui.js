@@ -86,18 +86,8 @@ function applyGeneralSettings(settings) {
 }
 
 // --- Instant Apply ---
-function getFormattedValue(setting, unit) {
-  if (setting.value.includes(unit)) {
-    return setting.value;
-  } else {
-    const fixedValue = setting.value + unit;
-    return fixedValue;
-  }
-}
-
 [bgColor, textColor, fontSize, linkColor, boldText].forEach(input => {
   input.addEventListener("input", () => {
-    console.log(getFormattedValue(fontSize, "px"))
     const settings = {
       bgColor: bgColor.value,
       textColor: textColor.value,

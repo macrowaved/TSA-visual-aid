@@ -203,6 +203,15 @@ loadData("settings", (savedSettings) => {
 
 
   /* ---------------- APPLY SETTINGS ---------------- */
+  function getFormattedValue(setting, unit) {
+    if (setting.value.includes(unit)) {
+      return setting.value;
+    } else {
+      const fixedValue = setting.value + unit;
+      return fixedValue;
+    }
+  }
+
   function applySettings(s) {
     chrome.tabs.query({}, (tabs) => {
       for (const tab of tabs) {
