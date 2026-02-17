@@ -204,7 +204,9 @@ loadData("settings", (savedSettings) => {
 
   /* ---------------- APPLY SETTINGS ---------------- */
   function getFormattedValue(input, unit) {
-    if (input.includes(unit)) {
+    if (!(input)) {
+      return input;
+    } else if (input.includes(unit)) {
       return input;
     } else {
       const fixedValue = input + unit;
