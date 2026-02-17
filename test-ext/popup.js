@@ -215,6 +215,7 @@ loadData("settings", (savedSettings) => {
   }
 
   function applySettings(s) {
+    console.log('applying settings')
     chrome.tabs.query({}, (tabs) => {
       for (const tab of tabs) {
         chrome.scripting.executeScript({
