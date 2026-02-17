@@ -203,17 +203,6 @@ loadData("settings", (savedSettings) => {
 
 
   /* ---------------- APPLY SETTINGS ---------------- */
-  function getFormattedValue(input, unit) {
-    if (!(input)) {
-      return input;
-    } else if (input.includes(unit)) {
-      return input;
-    } else {
-      const fixedValue = input + unit;
-      return fixedValue;
-    }
-  }
-
   function applySettings(s) {
     console.log('applying settings')
     chrome.tabs.query({}, (tabs) => {
@@ -221,6 +210,17 @@ loadData("settings", (savedSettings) => {
         chrome.scripting.executeScript({
           target: { tabId: tab.id },
           func: (x) => {
+            function getFormattedValue(input, unit) {
+              if (!(input)) {
+                return input;
+              } else if (input.includes(unit)) {
+                return input;
+              } else {
+                const fixedValue = input + unit;
+                return fixedValue;
+              }
+            }
+
             document.body.style.backgroundColor = x.bgColor;
             document.body.style.color = x.textColor;
             document.body.style.fontSize = x.fontSize;
