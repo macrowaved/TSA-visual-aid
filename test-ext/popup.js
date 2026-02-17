@@ -203,11 +203,11 @@ loadData("settings", (savedSettings) => {
 
 
   /* ---------------- APPLY SETTINGS ---------------- */
-  function getFormattedValue(setting, unit) {
-    if (setting.value.includes(unit)) {
-      return setting.value;
+  function getFormattedValue(input, unit) {
+    if (input.includes(unit)) {
+      return input;
     } else {
-      const fixedValue = setting.value + unit;
+      const fixedValue = input + unit;
       return fixedValue;
     }
   }
@@ -221,6 +221,7 @@ loadData("settings", (savedSettings) => {
             document.body.style.backgroundColor = x.bgColor;
             document.body.style.color = x.textColor;
             document.body.style.fontSize = x.fontSize;
+            console.log(x.fontSize, "px");
             document.body.style.lineHeight = x.lineHeight;
             document.querySelectorAll('p, li, span, div, a, h1, h2, h3, h4, h5, h6').forEach(el => {
               el.style.lineHeight = x.lineHeight;
