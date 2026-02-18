@@ -158,4 +158,22 @@ button:hover {
   border-radius: 3px;
   overflow-y: auto;
 }
- 
+
+.numerical-input-selection {
+  display: inline-flex; 
+}
+
+.numerical-input-selection input {
+  display: inline-flex;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.button-container button {
+  border: none;
+  outline: none;
+  padding: 4px 8px;
+}
