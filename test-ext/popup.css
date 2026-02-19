@@ -233,8 +233,8 @@ button:hover {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   stroke-width: 3;
   display: block;
   pointer-events: none; /* ensures clicking the button works properly */
