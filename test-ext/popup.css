@@ -168,11 +168,11 @@ button:hover {
   border-radius: 3px;
   background: #111;
   margin: 3px 0 6px 0;
-  height: 20.5px; /* match other inputs */
-  overflow: hidden; /* ensures shared borders + radius */
+  min-height: 24px;          /* consistent height */
+  overflow: hidden;          /* keeps shared border clean */
 }
 
-/* Label behaves normally but doesn’t add height */
+/* Label wrapper */
 .numerical-input-section label {
   display: flex;
   align-items: center;
@@ -180,10 +180,9 @@ button:hover {
   margin: 0;
   padding-left: 4px;
   gap: 5px;
-  height: 100%;
 }
 
-/* Remove input border so wrapper is the only border */
+/* Input */
 .numerical-input-section input {
   border: none;
   outline: none;
@@ -192,34 +191,33 @@ button:hover {
   flex: 1;
   padding: 0 4px;
   margin: 0;
-  height: 20.5px;
-  padding-top: 2px;
-  padding-bottom: 2px;
+  height: 100%;              /* fill available space */
+  min-height: 0;             /* prevents flex overflow issue */
+  font-size: 13px;
 }
 
-/* Stack buttons */
+/* Button stack */
 .button-container {
   display: flex;
   flex-direction: column;
   border-left: 1px solid #444;
-  height: 20.5px;
+  width: 22px;
 }
 
-/* Override global button styles */
+/* Buttons */
 .button-container button {
-  all: unset; /* removes inherited margins + radius */
+  all: unset;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #222;
   color: #14b8a6;
-  width: 22px;
   flex: 1;
+  min-height: 0;             /* prevents cutoff */
   cursor: pointer;
-  font-size: 10px;
 }
 
-/* Shared middle divider */
+/* Divider between buttons */
 .button-container button:first-child {
   border-bottom: 1px solid #444;
 }
@@ -230,8 +228,11 @@ button:hover {
   color: #111;
 }
 
+/* Icon size */
 .button-container svg {
   width: 12px;
   height: 12px;
-  stroke-width: 3; /* adjust thickness */
+  stroke-width: 2.5;
+  display: block;            /* removes inline spacing issues */
 }
+
