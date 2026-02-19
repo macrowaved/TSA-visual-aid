@@ -231,8 +231,8 @@ button:hover {
 
 /* Icon size */
 .button-container svg {
-  width: 6px;
-  height: 6px;
+  width: 12px;
+  height: 12px;
   stroke-width: 2;
   display: block; /* remove inline spacing */
 }
