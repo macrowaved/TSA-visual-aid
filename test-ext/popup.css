@@ -228,3 +228,9 @@ button:hover {
   background: #14b8a6;
   color: #111;
 }
+
+.button-container svg {
+  width: 12px;
+  height: 12px;
+  stroke-width: 2; /* adjust thickness */
+}
