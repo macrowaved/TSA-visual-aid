@@ -233,9 +233,10 @@ button:hover {
 
 /* SVG arrow inside buttons */
 .button-container svg {
-  width: 12px;         /* arrow width */
-  height: 12px;        /* arrow height */
-  stroke-width: 3;     /* thick line for visibility */
+  width: 12px;
+  height: 12px;
+  stroke-width: 3;
   display: block;
-  margin: auto;        /* center the arrow perfectly in the button */
+  margin: -1px auto 0 auto; /* shift up slightly */
 }
+
