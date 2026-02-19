@@ -170,6 +170,8 @@ button:hover {
   margin: 3px 0 6px 0;
   height: 16.5px; /* match other inputs */
   overflow: hidden; /* ensures shared borders + radius */
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
 
 /* Label behaves normally but doesn’t add height */
