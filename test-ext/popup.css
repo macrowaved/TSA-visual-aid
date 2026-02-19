@@ -232,5 +232,5 @@ button:hover {
 .button-container svg {
   width: 12px;
   height: 12px;
-  stroke-width: 2; /* adjust thickness */
+  stroke-width: 3; /* adjust thickness */
 }
