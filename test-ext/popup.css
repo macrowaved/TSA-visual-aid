@@ -168,10 +168,8 @@ button:hover {
   border-radius: 3px;
   background: #111;
   margin: 3px 0 6px 0;
-  height: 16.5px; /* match other inputs */
+  height: 24px; /* match other inputs */
   overflow: hidden; /* ensures shared borders + radius */
-  padding-top: 2px;
-  padding-bottom: 2px;
 }
 
 /* Label behaves normally but doesn’t add height */
@@ -195,7 +193,8 @@ button:hover {
   padding: 0 4px;
   margin: 0;
   height: 100%;
-  font-size: 13px;
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
 
 /* Stack buttons */
