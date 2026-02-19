@@ -168,7 +168,7 @@ button:hover {
   border-radius: 3px;
   background: #111;
   margin: 3px 0 6px 0;
-  height: 16.5px; /* match other inputs */
+  height: 24px; /* match other inputs */
   overflow: hidden; /* ensures shared borders + radius */
 }
 
@@ -192,7 +192,7 @@ button:hover {
   flex: 1;
   padding: 0 4px;
   margin: 0;
-  height: 100%;
+  height: 16.5px;
   padding-top: 2px;
   padding-bottom: 2px;
 }
