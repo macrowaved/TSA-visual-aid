@@ -168,7 +168,7 @@ button:hover {
   border-radius: 3px;
   background: #111;
   margin: 3px 0 6px 0;
-  height: 24px; /* match other inputs */
+  height: 16.5px; /* match other inputs */
   overflow: hidden; /* ensures shared borders + radius */
 }
 
