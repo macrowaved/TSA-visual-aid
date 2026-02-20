@@ -124,7 +124,7 @@ input, select, textarea {
 select {
   height: 22.5px;
   text-indent: 0;
-  align-items: left;
+  padding-left: 0px;
 }
 
 input {
