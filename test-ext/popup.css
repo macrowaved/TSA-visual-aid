@@ -121,6 +121,10 @@ input, select, textarea {
   border-radius: 3px;
 }
 
+input {
+  font-size: 13px;
+}
+
 button {
   background: #222;
   color: #14b8a6;
