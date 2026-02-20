@@ -217,7 +217,7 @@ button:hover {
 }
 
 /* Divider between buttons */
-.button-border {
+.button-divider {
   height: 1px;
   background: #444;
   width: 100%;
