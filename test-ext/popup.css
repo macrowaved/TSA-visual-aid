@@ -121,6 +121,10 @@ input, select, textarea {
   border-radius: 3px;
 }
 
+select {
+  height: 22.5px;
+}
+
 input {
   font-size: 13px;
 }
