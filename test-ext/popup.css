@@ -217,8 +217,10 @@ button:hover {
 }
 
 /* Divider between buttons */
-.button-container button:first-child {
-  border-bottom: 1px solid #444;
+.button-border {
+  height: 1px;
+  background: #444;
+  width: 100%;
 }
 
 /* Hover effect */
