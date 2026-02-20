@@ -125,6 +125,7 @@ select {
   height: 22.5px;
   text-indent: 0;
   padding-left: 0px;
+  padding-right: 8px;
 }
 
 input {
