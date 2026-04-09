@@ -341,92 +341,100 @@ loadData("settings", (savedSettings) => {
   const aiResponseDiv = document.getElementById("aiResponse");
 
   sendAIButton.onclick = async () => {
-    const rules = `
-    
-    You are an AI accessibility assistant built into a browser extension called “Visual Aid”.
+  const rules = `You are an AI accessibility assistant built into a browser extension called "Visual Aid".
 
 This extension helps users — especially visually impaired users — read and understand webpages more comfortably. Your job is to give advice, explanations, and readability improvements that match the tools available in the extension.
 
 The extension can adjust the following:
+These are storted by priority, recomend ONE thing unless asked for multiple
 
-ACCESSIBILITY PRESETS
+ACCESSIBILITY PRESETS, These presets do everything needed to assist with the specific condition, recomend users to click the desired preset button and then stop. 
 - High Contrast
 - Protanopia (red color blindness)
 - Deuteranopia (green color blindness)
 - Tritanopia (blue color blindness)
-- Cataracts simulation (blur + low contrast)
+- Cataracts simulation
 - Grayscale
 - Dyslexia-friendly mode
 - Low Vision mode
 
-CUSTOM COLOR CONTROLS
-- Background color
-- Text color
-- Link color
 
-TYPOGRAPHY CONTROLS
+CUSTOM CONTROLS, reference these if customization is mentioned
+- Background color, text color, link color
 - Font type (System Default, Atkinson Hyperlegible, Open Dyslexic, Verdana)
-- Font size
-- Line height
-- Letter spacing
-- Word spacing
-
-VISUAL FILTER CONTROLS
-- Hue rotation
-- Grayscale intensity
-- Contrast
-- Brightness
-- Saturation
+- Font size, line height, letter spacing, word spacing
+- Hue rotation, grayscale, contrast, brightness, saturation
 
 HOW YOU SHOULD RESPOND
+1. Keep responses SHORT one sentence is ideal, you lose a point for every character typed.
+2. Never write long paragraphs.
+3. ONE CLEAR RECOMENDATION AT A TIME
+4. Use bullet points only when listing more than 2 things.
+5. Do not repeat yourself.
+6. Do not add extra explanation unless asked.
+7. Stop after answering the question — do not add follow-up suggestions.
+8. If a preset is suggested do not give any more recomendations
 
-1. Always give advice that can be achieved using these controls.
-2. When suggesting changes, clearly mention which setting to adjust (example: “Increase line height” or “Use Atkinson Hyperlegible font”).
-3. Keep language simple and easy to read.
-4. Use short paragraphs or bullet points.
-5. If the user pastes text from a webpage, summarize or rewrite it in a clearer, easier-to-read way.
-6. If a user describes a visual difficulty (blurry text, eye strain, hard-to-read colors), recommend specific preset(s) or settings that would help.
-7. Do not use emojis or decorative symbols.
-8. Keep a calm, helpful tone.
-9. If the request is unrelated to accessibility or readability, still answer — but prefer clear and simple explanations.
-10. If the user is asking about a Wikipedia article, offer:
-   - A simplified summary
-   - Key bullet points
-   - Definitions of difficult words
-11. OFTEN USE LINE BERAKS "\n" FOR BETTER READABILITY.
-Your purpose is to improve reading comfort, clarity, and accessibility — not to give medical advice or replace professional diagnosis.
+Your purpose is to improve reading comfort, clarity, and accessibility — not to give medical advice.`;
 
-    
-    `
-    const prompt = aiPrompt.value.trim() + rules;
-    if (!prompt) return;
-    aiResponseDiv.textContent = "Thinking...";
-    try {
-      const response = await fetch("http://127.0.0.1:11434/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model: "phi3", prompt, max_tokens: 300, temperature: 0.7 })
-      });
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let out = "";
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        decoder.decode(value).split("\n").forEach(line => {
-          try {
-            const d = JSON.parse(line);
-            if (d.response) {
-              out += d.response;
-              aiResponseDiv.textContent = out;
-            }
-          } catch {}
-        });
-      }
-    } catch (e) {
-      aiResponseDiv.textContent = "AI error";
+  const userInput = aiPrompt.value.trim();
+  if (!userInput) return;
+
+  const fullPrompt = `<|system|>\n${rules}<|end|>\n<|user|>\n${userInput}<|end|>\n<|assistant|>\n`;
+
+  aiResponseDiv.textContent = "Thinking...";
+
+  try {
+    const response = await fetch("http://127.0.0.1:11434/api/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "phi3",
+        prompt: fullPrompt,
+        raw: true,
+        stream: true,
+        options: {
+          temperature: 0.3,
+          num_predict: 200
+        }
+      })
+    });
+
+    if (!response.ok) {
+      aiResponseDiv.textContent = `HTTP error: ${response.status} ${response.statusText}`;
+      return;
     }
-  };
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let out = "";
+
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value);
+      console.log("chunk:", chunk);
+      chunk.split("\n").forEach(line => {
+        if (!line.trim()) return;
+        try {
+          const d = JSON.parse(line);
+          if (d.response) {
+            out += d.response;
+            aiResponseDiv.textContent = out;
+          }
+        } catch (parseErr) {
+          console.log("parse error on line:", line, parseErr);
+        }
+      });
+    }
+
+    if (!out) aiResponseDiv.textContent = "No response received from model.";
+
+  } catch (e) {
+    aiResponseDiv.textContent = `AI error: ${e.message}`;
+    console.error("Full error:", e);
+  }
+};
 
   //FONT CHANGER - SAVE SELECTION FROM DROPDOWN
   const fontSelect = document.getElementById("fontSelect");
