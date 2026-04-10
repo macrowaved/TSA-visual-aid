@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Clear Canvas",
   "version": "1.0",
-  "description": "Style pages and talk to local AI",
+  "description": "Improve web readability and talk to local AI",
   
   "icons": {
     "16": "icon.png",
