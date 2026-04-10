@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>TSA PROJECT</title>
+<title>Clear Canvas</title>
 <link rel="stylesheet" href="popup.css">
 </head>
 <body>
 
-<h2>Visual Aid Extension</h2>
+<h2>Clear Canvas</h2>
 
 <div class="category">
   <button class="cat-btn" data-cat="advanced">Presets</button>
@@ -47,13 +47,18 @@
     <div class="folder-title">Typography</div>
     <div class="folder-content">
       <label for="fontSelect">Font Type</label>
-        <select id="fontSelect">
-          <option value="defaultFont">System Default</option>
-          <option value="atkinson">Atkinson Hyperlegible</option>
-          <option value="openDyslexic">Open Dyslexic</option>
-          <option value="verdana">Verdana</option>
-        </select> 
-      <label>Font Size <input type="text" id="fontSize"></label>
+      <select id="fontSelect">
+        <option value="defaultFont">System Default</option>
+        <option value="atkinson">Atkinson Hyperlegible</option>
+        <option value="openDyslexic">Open Dyslexic</option>
+        <option value="verdana">Verdana</option>
+      </select>
+
+      <label>Font Size </label>
+      <div class="numerical-input-section">
+        <input type="text" id="fontSize">
+      </div>
+
       <label>Line Height <input type="text" id="lineHeight"></label>
       <label>Letter Spacing <input type="text" id="letterSpacing"></label>
       <label>Word Spacing <input type="text" id="wordSpacing"></label>

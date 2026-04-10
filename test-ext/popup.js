@@ -1,4 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
+  /* ------------chrome storage------------ */
+  function storeData(key, data) {
+    chrome.storage.local.set({[key]: data});
+  }
+
+  function loadData(key, callback) {
+    chrome.storage.local.get({[key]: null}, (result) => {
+      callback(result[key]);
+    });
+  }
 
   /* ---------------- UI ---------------- */
   const catBtns = document.querySelectorAll(".cat-btn");
@@ -35,6 +45,16 @@ document.addEventListener("DOMContentLoaded", () => {
     brightness: brightness,
     saturate: saturate
   };
+
+  /* ---------------- ION KNOW ---------------- */
+  loadData("settings", (savedSettings) => {
+    if (savedSettings) {
+      Object.keys(inputs).forEach(k => {
+        if (savedSettings[k] !== undefined) inputs[k].value = savedSettings[k];
+      });
+    }
+  });
+
 
   /* ---------------- DEFAULT (NORMAL PAGE) ---------------- */
   const DEFAULT_SETTINGS = {
@@ -145,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
       bgColor: "#ffffff",
       textColor: "#0a0a0a",
       linkColor: "#0044cc",
-      fontSize: "20px",
+      fontSize: "25px",
       lineHeight: "1.6",
       grayscale: 0,
       contrast: 110,
@@ -157,16 +177,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let activePreset = null;
 
+/* ---------------- LOAD BUTTON STATE ---------------- */
+// Load the last saved settings (preset or custom)
+loadData("settings", (savedSettings) => {
+  if (savedSettings) {
+    Object.keys(inputs).forEach(k => {
+      if (savedSettings[k] !== undefined) inputs[k].value = savedSettings[k];
+    });
+    applySettings(savedSettings);
+  }
+  
+  // Now load selected preset ONLY for button highlight
+  loadData("presetActive", (isActive) => {
+    if (!isActive) return;
+    loadData("selectedPreset", (savedPreset) => {
+      if (!savedPreset) return;
+      activePreset = savedPreset;
+      // highlight preset button, but do NOT overwrite inputs
+      document.querySelectorAll(".preset-btn").forEach(b => b.classList.remove("active"));
+      document.querySelector(`.preset-btn[data-preset="${activePreset}"]`)?.classList.add("active");
+    });
+  });
+});
+
+
+
   /* ---------------- APPLY SETTINGS ---------------- */
   function applySettings(s) {
+    console.log('applying settings')
     chrome.tabs.query({}, (tabs) => {
       for (const tab of tabs) {
         chrome.scripting.executeScript({
           target: { tabId: tab.id },
           func: (x) => {
+            function getFormattedValue(input, unit) {
+              if (!(input)) {
+                return input;
+              } else if (input.includes(unit)) {
+                return input;
+              } else {
+                const fixedValue = input + unit;
+                return fixedValue;
+              }
+            }
+
             document.body.style.backgroundColor = x.bgColor;
             document.body.style.color = x.textColor;
-            document.body.style.fontSize = x.fontSize;
+            document.body.style.fontSize = getFormattedValue(x.fontSize, "px");
             document.body.style.lineHeight = x.lineHeight;
             document.querySelectorAll('p, li, span, div, a, h1, h2, h3, h4, h5, h6').forEach(el => {
               el.style.lineHeight = x.lineHeight;
@@ -192,9 +249,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const s = {};
     Object.keys(inputs).forEach(k => s[k] = inputs[k].value);
     activePreset = null;
+
+    // Save the advanced/custom settings
+    storeData("settings", s);
     applySettings(s);
 
-    // font code twih
+    // SAVE CURRENT FONT BEFORE APPLYING
+    chrome.storage.sync.set({ selectedFont: fontSelect.value });
+
+    // Apply the font
     chrome.tabs.query({}, (tabs) => {
       for (const tab of tabs) {
         chrome.tabs.sendMessage(tab.id, { action: "applyFont" });
@@ -202,13 +265,22 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
+
   /* ---------------- RESET ---------------- */
   document.getElementById("resetGeneral").onclick = () => {
     activePreset = null;
     Object.keys(inputs).forEach(k => inputs[k].value = DEFAULT_SETTINGS[k]);
+    storeData("settings", DEFAULT_SETTINGS);
     applySettings(DEFAULT_SETTINGS);
 
-    // hi hudson this is to reset the font
+    // clear preset state in storage
+    storeData("selectedPreset", null);
+    storeData("presetActive", false);
+
+    // remove active highlight
+    document.querySelectorAll(".preset-btn").forEach(b => b.classList.remove("active"));
+
+    // font code - reset font
     document.getElementById("fontSelect").value = "defaultFont";
     fontSelect.dispatchEvent(new Event("change"));
     chrome.tabs.query({}, (tabs) => {
@@ -218,15 +290,23 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
+
   /* ---------------- PRESET TOGGLE ---------------- */
   document.querySelectorAll(".preset-btn").forEach(btn => {
     btn.onclick = () => {
+
       const name = btn.dataset.preset;
+
+      storeData("selectedPreset", name);
+      storeData("presetActive", true);
 
       if (activePreset === name) {
         activePreset = null;
         Object.keys(inputs).forEach(k => inputs[k].value = DEFAULT_SETTINGS[k]);
-        applySettings(DEFAULT_SETTINGS);
+        storeData("settings", DEFAULT_SETTINGS);
+        applySettings(DEFAULT_SETTINGS); 
+        storeData("presetActive", false);
+        btn.classList.remove("active");
 
         // reset font dropdown to default and persist
         fontSelect.value = DEFAULT_SETTINGS.fontSelect || "defaultFont";
@@ -257,10 +337,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         
       }
+
       const p = PRESETS[name];
       Object.keys(inputs).forEach(k => inputs[k].value = p[k]);
+      storeData("settings", p);
       applySettings(p);
-
+      document.querySelectorAll(".preset-btn").forEach(b => b.classList.remove("active"));
+      document.querySelector(`.preset-btn[data-preset="${name}"]`)?.classList.add("active");
     };
   });
 
@@ -270,102 +353,111 @@ document.addEventListener("DOMContentLoaded", () => {
   const aiResponseDiv = document.getElementById("aiResponse");
 
   sendAIButton.onclick = async () => {
-    const rules = `
-    
-    You are an AI accessibility assistant built into a browser extension called “Visual Aid”.
+  const rules = `You are an AI accessibility assistant built into a browser extension called "Visual Aid".
 
 This extension helps users — especially visually impaired users — read and understand webpages more comfortably. Your job is to give advice, explanations, and readability improvements that match the tools available in the extension.
 
 The extension can adjust the following:
+These are storted by priority, recomend ONE thing unless asked for multiple
 
-ACCESSIBILITY PRESETS
+ACCESSIBILITY PRESETS, These presets do everything needed to assist with the specific condition, recomend users to click the desired preset button and then stop. 
 - High Contrast
 - Protanopia (red color blindness)
 - Deuteranopia (green color blindness)
 - Tritanopia (blue color blindness)
-- Cataracts simulation (blur + low contrast)
+- Cataracts simulation
 - Grayscale
 - Dyslexia-friendly mode
 - Low Vision mode
 
-CUSTOM COLOR CONTROLS
-- Background color
-- Text color
-- Link color
 
-TYPOGRAPHY CONTROLS
+CUSTOM CONTROLS, reference these if customization is mentioned
+- Background color, text color, link color
 - Font type (System Default, Atkinson Hyperlegible, Open Dyslexic, Verdana)
-- Font size
-- Line height
-- Letter spacing
-- Word spacing
-
-VISUAL FILTER CONTROLS
-- Hue rotation
-- Grayscale intensity
-- Contrast
-- Brightness
-- Saturation
+- Font size, line height, letter spacing, word spacing
+- Hue rotation, grayscale, contrast, brightness, saturation
 
 HOW YOU SHOULD RESPOND
+1. Keep responses SHORT one sentence is ideal, you lose a point for every character typed.
+2. Never write long paragraphs.
+3. ONE CLEAR RECOMENDATION AT A TIME
+4. Use bullet points only when listing more than 2 things.
+5. Do not repeat yourself.
+6. Do not add extra explanation unless asked.
+7. Stop after answering the question — do not add follow-up suggestions.
+8. If a preset is suggested do not give any more recomendations
 
-1. Always give advice that can be achieved using these controls.
-2. When suggesting changes, clearly mention which setting to adjust (example: “Increase line height” or “Use Atkinson Hyperlegible font”).
-3. Keep language simple and easy to read.
-4. Use short paragraphs or bullet points.
-5. If the user pastes text from a webpage, summarize or rewrite it in a clearer, easier-to-read way.
-6. If a user describes a visual difficulty (blurry text, eye strain, hard-to-read colors), recommend specific preset(s) or settings that would help.
-7. Do not use emojis or decorative symbols.
-8. Keep a calm, helpful tone.
-9. If the request is unrelated to accessibility or readability, still answer — but prefer clear and simple explanations.
-10. If the user is asking about a Wikipedia article, offer:
-   - A simplified summary
-   - Key bullet points
-   - Definitions of difficult words
-11. OFTEN USE LINE BERAKS "\n" FOR BETTER READABILITY.
-Your purpose is to improve reading comfort, clarity, and accessibility — not to give medical advice or replace professional diagnosis.
+Your purpose is to improve reading comfort, clarity, and accessibility — not to give medical advice.`;
 
-    
-    `
-    const prompt = aiPrompt.value.trim() + rules;
-    if (!prompt) return;
-    aiResponseDiv.textContent = "Thinking...";
-    try {
-      const response = await fetch("http://127.0.0.1:11434/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model: "phi3", prompt, max_tokens: 300, temperature: 0.7 })
-      });
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let out = "";
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        decoder.decode(value).split("\n").forEach(line => {
-          try {
-            const d = JSON.parse(line);
-            if (d.response) {
-              out += d.response;
-              aiResponseDiv.textContent = out;
-            }
-          } catch {}
-        });
-      }
-    } catch (e) {
-      aiResponseDiv.textContent = "AI error";
+  const userInput = aiPrompt.value.trim();
+  if (!userInput) return;
+
+  const fullPrompt = `<|system|>\n${rules}<|end|>\n<|user|>\n${userInput}<|end|>\n<|assistant|>\n`;
+
+  aiResponseDiv.textContent = "Thinking...";
+
+  try {
+    const response = await fetch("http://127.0.0.1:11434/api/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "phi3",
+        prompt: fullPrompt,
+        raw: true,
+        stream: true,
+        options: {
+          temperature: 0.3,
+          num_predict: 200
+        }
+      })
+    });
+
+    if (!response.ok) {
+      aiResponseDiv.textContent = `HTTP error: ${response.status} ${response.statusText}`;
+      return;
     }
-  };
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let out = "";
+
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value);
+      console.log("chunk:", chunk);
+      chunk.split("\n").forEach(line => {
+        if (!line.trim()) return;
+        try {
+          const d = JSON.parse(line);
+          if (d.response) {
+            out += d.response;
+            aiResponseDiv.textContent = out;
+          }
+        } catch (parseErr) {
+          console.log("parse error on line:", line, parseErr);
+        }
+      });
+    }
+
+    if (!out) aiResponseDiv.textContent = "No response received from model.";
+
+  } catch (e) {
+    aiResponseDiv.textContent = `AI error: ${e.message}`;
+    console.error("Full error:", e);
+  }
+};
+
+  //FONT CHANGER - SAVE SELECTION FROM DROPDOWN
+  const fontSelect = document.getElementById("fontSelect");
+
+  chrome.storage.sync.get(["selectedFont"], result => {
+    fontSelect.value = result.selectedFont || "defaultFont";
+  });
+
+  fontSelect.addEventListener("change", () => {
+    chrome.storage.sync.set({selectedFont: fontSelect.value});
+  });
 });
 
 
-//FONT CHANGER - SAVE SELECTION FROM DROPDOWN
-const fontSelect = document.getElementById("fontSelect");
-
-chrome.storage.sync.get(["selectedFont"], result => {
-  fontSelect.value = result.selectedFont || "defaultFont";
-});
-
-fontSelect.addEventListener("change", () => {
-  chrome.storage.sync.set({selectedFont: fontSelect.value});
-});
