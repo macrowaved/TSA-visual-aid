@@ -6,249 +6,231 @@
   font-style: normal;
 }
 
-@font-face {
-  font-family: 'Atkinson Hyperlegible';
-  src: url('fonts/AtkinsonHyperlegible-Bold.ttf') format('truetype');
-  font-weight: 700;
-  font-style: normal;
+/* Theme Variables for easy tweaking */
+:root {
+  --bg-main: #ffffff;
+  --bg-secondary: #f3f4f6;
+  --text-main: #1f2937;
+  --text-muted: #4b5563;
+  --accent: #0d9488;
+  --accent-hover: #0f766e;
+  --border: #d1d5db;
+  --input-bg: #ffffff;
 }
-
-@font-face {
-  font-family: 'Atkinson Hyperlegible';
-  src: url('fonts/AtkinsonHyperlegible-Italic.ttf') format('truetype');
-  font-weight: 400;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'Atkinson Hyperlegible';
-  src: url('fonts/AtkinsonHyperlegible-BoldItalic.ttf') format('truetype');
-  font-weight: 700;
-  font-style: italic;
-}
-
 
 body {
-  background-color: #111;
-  color: #eee;
+  background-color: var(--bg-main);
+  color: var(--text-main);
   font-family: "Atkinson Hyperlegible", sans-serif;
-  font-size: 13px;
-  width: 250px;
-  padding: 15px;
-}
-
-button {
-  font-family: "Atkinson Hyperlegible", sans-serif;
-}
-
-.presets {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 1. Consistent 2-column grid */
-  gap: 5px; /* 7. Better spacing */
-}
-
-.preset-btn.active {
-  background-color: #14b8a6;
-  color: #111;
+  /* Increased width and font size for legibility */
+  font-size: 15px; 
+  width: 350px; 
+  padding: 20px;
+  line-height: 1.5;
 }
 
 h2 {
-  margin-bottom: 5px;
+  margin-bottom: 15px;
   margin-top: 0px;
   text-align: center;
+  color: var(--accent);
+  font-size: 1.5rem;
 }
 
 h3 {
-  margin-top: 20px;
-  margin-bottom: 5px;
+  margin-top: 10px;
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+  color: var(--text-main);
 }
 
+/* --- Navigation --- */
 .category {
   display: flex;
-  justify-content: space-around;
-  margin-bottom: 10px;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 20px;
 }
 
 .cat-btn {
-  background: #222;
-  color: #14b8a6;
-  border: 1px solid #14b8a6;
-  border-radius: 5px;
-  padding: 5px 10px;
+  flex: 1;
+  background: var(--bg-secondary);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 5px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 13px;
+  transition: all 0.2s;
 }
 
 .cat-btn.active {
-  background: #14b8a6;
-  color: #111;
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
 }
 
+/* --- Content Areas --- */
 .content {
   display: none;
-  margin-top: 0px;
 }
 
 .folder {
-  border: 1px solid #333;
-  margin-bottom: 10px;
-  border-radius: 3px;
+  border: 1px solid var(--border);
+  margin-bottom: 12px;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .folder-title {
-  background: #222;
-  padding: 5px;
+  background: var(--bg-secondary);
+  padding: 10px 12px;
   cursor: pointer;
   font-weight: bold;
-  color: #eee;
-  border-radius: 2px;
+  color: var(--text-main);
+  border-bottom: 1px solid var(--border);
 }
 
 .folder-content {
   display: none;
-  padding: 5px 10px;
+  padding: 12px;
+  background: var(--bg-main);
+}
+
+/* --- Controls --- */
+label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: var(--text-muted);
 }
 
 input, select, textarea {
-  font-family: 'Atkinson Hyperlegible';
+  font-family: inherit;
   box-sizing: border-box;
   width: 100%;
-  margin: 3px 0 6px 0;
-  padding: 2px 4px;
-  background: #111;
-  border: 1px solid #444;
-  color: #eee;
-  border-radius: 3px;
+  margin: 5px 0 10px 0;
+  padding: 8px;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  border-radius: 6px;
+  font-size: 14px;
 }
 
+/* Specific Height for Select to match inputs */
 select {
-  height: 22.5px;
-  text-indent: 0;
-  padding-left: 0px;
-}
-
-input {
-  font-size: 13px;
+  height: 38px;
 }
 
 button {
-  background: #222;
-  color: #14b8a6;
-  border: 1px solid #14b8a6;
-  padding: 4px 8px;
-  margin-top: 5px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 10px 15px;
   cursor: pointer;
-  border-radius: 3px;
-  font-size: 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background 0.2s;
 }
 
 button:hover {
-  background: #14b8a6;
-  color: #111;
+  background: var(--accent-hover);
+  color: white;
 }
 
+/* --- Presets Grid --- */
+.presets {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.preset-btn {
+  background: var(--bg-secondary);
+  color: var(--text-main);
+  border: 1px solid var(--border);
+  margin-top: 0;
+}
+
+.preset-btn.active {
+  background: var(--accent);
+  color: white;
+}
+
+/* --- AI Section --- */
 #aiPrompt {
-  height: 80px;
+  height: 100px;
   resize: none;
-  margin-top: 5px;
-  margin-bottom: 5px;
+  margin-bottom: 5px; /* Reduced margin to keep button close */
 }
 
 .sendButton {
-  width: 100%;
-  margin-top: 0px;
-  margin-bottom: 15px;
+  width: 100%;        /* Makes it the full width of the input */
+  margin-top: 0;      /* Removes top gap */
+  margin-bottom: 15px; /* Pushes the response box further away */
+  display: block;
 }
 
 #aiResponse {
-  margin-top: 5px;
-  min-height: 50px;
-  background: #222;
-  padding: 5px;
-  border-radius: 3px;
-  overflow-y: auto;
+  margin-top: 10px;
+  min-height: 60px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 14px;
 }
 
-/* ===== FIXED NUMERICAL INPUT ===== */
-
+/* --- Numerical Input Sections --- */
 .numerical-input-section {
   display: flex;
-  align-items: stretch;
-  border: 1px solid #444;
-  border-radius: 3px;
-  background: #111;
-  margin: 3px 0 6px 0;
-  height: 20.5px; /* 16.5px input + 2px top/bottom padding matches other inputs */
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--input-bg);
+  margin-bottom: 10px;
+  height: 40px;
   overflow: hidden;
 }
 
-/* Label wrapper */
-.numerical-input-section label {
-  display: flex;
-  align-items: center;
-  flex: 1;
+.numerical-input-section input {
+  border: none;
   margin: 0;
-  padding-left: 4px;
-  gap: 5px;
   height: 100%;
 }
 
-/* Input field */
-.numerical-input-section input {
-  border: none;
-  outline: none;
-  background: #111;
-  color: #eee;
-  flex: 1;
-  margin: 0;
-  padding: 2px 4px;    /* top/bottom padding 2px */
-  height: 16.5px;      /* matches other inputs */
-  box-sizing: content-box;
-  font-size: 13px;
-}
-
-/* Button container (stacked buttons) */
 .button-container {
   display: flex;
   flex-direction: column;
-  border-left: 1px solid #444;
-  width: 22px;
-  height: 100%;        /* fill numerical-input-section height */
+  width: 30px;
+  height: 100%;
+  border-left: 1px solid var(--border);
 }
 
-/* Buttons */
 .button-container button {
   all: unset;
-  position: relative;      /* needed for absolute positioning of SVG */
-  flex: 1 1 50%;           /* split container evenly */
-  height: 10.25px;         /* exact half of 20.5px */
+  flex: 1;
+  text-align: center;
+  background: var(--bg-secondary);
   cursor: pointer;
-  background: #222;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--text-main);
 }
 
-/* Divider between buttons */
-.button-divider {
-  height: 1.06px;
-  background: #444;
-  width: 100%;
-}
-
-/* Hover effect */
 .button-container button:hover {
-  background: #14b8a6;
-  color: #111;
+  background: var(--border);
 }
 
-/* SVG arrows centered absolutely */
+.button-divider {
+  height: 1px;
+  background: var(--border);
+}
+
 .button-container svg {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 10px;
-  height: 10px;
-  stroke-width: 3;
-  display: block;
-  pointer-events: none; /* ensures clicking the button works properly */
+  width: 12px;
+  height: 12px;
 }
-
